@@ -7,6 +7,11 @@
     "knockout",
     "promise"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jrsearles/ko-promise.git"
+  },
+  "bugs": "https://github.com/jrsearles/ko-promise/issues",
   "author": "Joshua Searles",
   "license": "MIT",
   "dependencies": {
