@@ -1,5 +1,5 @@
 {
-  "name": "knockout-promise",
+  "name": "ko-promise",
   "main": "ko-promise.js",
   "version": "0.9.1",
   "homepage": "https://github.com/jrsearles/ko-promise",
