@@ -7,7 +7,7 @@
 	};
 
 	function isPromise(obj) {
-		return obj && typeof obj.then == "function";
+		return obj && typeof obj.then === "function";
 	}
 
 	function createResolver(callback, resolveObservable, stateObservable, expectedState) {
@@ -15,12 +15,13 @@
 		var resolvedValue;
 
 		return ko.computed(function() {
-			if (stateObservable() == expectedState) {
+			if (stateObservable() === expectedState) {
 				if (callback && !fired) {
 					fired = true;
 					resolvedValue = callback(resolveObservable());
 				}
 
+				// if the callback does not return a value pass the original value
 				if (resolvedValue === undefined) {
 					resolvedValue = resolveObservable();
 				}
@@ -95,7 +96,7 @@
 
 		var originalDispose = valueObservable.dispose;
 		valueObservable.dispose = function() {
-			valueObservable.state.dispose();
+			state.dispose();
 
 			if (rejectObservable.dispose) {
 				rejectObservable.dispose();
@@ -157,8 +158,7 @@
 
 		promises.forEach(function(current, index) {
 			if (isPromise(current) || ko.isObservable(current)) {
-				koPromise(current)
-					.then(function(value) { resolver(value, index); }, rejectValue);
+				koPromise(current).then(function(value) { resolver(value, index); }, rejectValue);
 			} else {
 				resolver(current, index);
 			}

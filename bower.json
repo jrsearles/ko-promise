@@ -1,0 +1,23 @@
+{
+  "name": "knockout-promise",
+  "main": "ko-promise.js",
+  "version": "0.9.1",
+  "homepage": "https://github.com/jrsearles/ko-promise",
+  "authors": [
+    "Joshua Searles <jrsearles@comcast.net>"
+  ],
+  "description": "Wraps promises, observables or any object into an observable which can be bound to your view and can be awaited like a promise.",
+  "keywords": [
+    "knockout",
+    "promise",
+    "ko",
+    "asynchronous"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ]
+}
