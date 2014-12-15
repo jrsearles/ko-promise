@@ -32,7 +32,7 @@ Within your application, you can use this observable just like any other observa
 <!-- /ko -->
 ```
 
-In large complex applications you may end up with calls that can return a promise, and observable, or even a plain object in different instances. `ko-promise` can help you here - by wrapping the object in an observable promise you can use a consistent approach to handling the value. Example:
+In large, complex applications you may end up with calls that can return a promise, an observable, or a plain object in different instances. `ko-promise` can help you here - by wrapping the object in an observable promise you can use a consistent approach to handling the value. Example:
 
 ```js
 function handleValue(value) {
@@ -44,6 +44,18 @@ function handleValue(value) {
 		});
 }
 ```
+
+## Installation
+
+ko.promise can be installed using Bower:
+
+```js
+bower install ko-promise
+```
+
+or direct download:
+* Minified: [ko-promise.min.js](http://jrsearles.github.io/ko-promise/ko-promise.min.js)
+* Source: [ko-promise.js](http://jrsearles.github.io/ko-promise/ko-promise.js)
 
 ## API
 
