@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	
+	<title>Knockout Promises</title>
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link ref="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">	
+
+	<style type="text/css">
+	.site-header {
+		background-color: #2b3e50;
+		color: #ebebeb;
+		margin-top: 15px;
+		padding: 20px;
+	}
+
+	.site-header p {
+		color: #b5cee6;
+	}
+	</style>
+</head>
+<body lang="en">
+<header class="site-header">
+	<div class="container">
+		<h1>ko.promise - Observable Promises</h1>
+		<p>Support Knockout observables with JavaScript promise objects.</p>
+	</div>
+</header>
+<div class="container">
+	<h2>Purpose</h2>
+	<p>The purpose of this library is to normalize the API surface between observables and promises, allowing them to be used interchangeably within your application. This simplifies the process of binding asynchronous calls to your view without having to explicitly await the promise's resolution. Example:</p>
+
+	<pre>
+  function vm() {
+	// the jQuery ajax call will return a promise derivative, 
+	// which will be turned into an observable that is set when the promise is resolved
+	this.asyncResource = ko.promise($.ajax("external/url"));
+
+	this.normalValue = ko.observable("")
+  }
+
+  ko.applyBindings(new vm());
+	</pre>
+
+	<p>Within your application, you can use this observable just like any other observable. In addition, the observable contains a `state` computed property which you can use to respond to state changes in your bindings. Example:</p>
+
+	<pre>
+  &lt;div class="alert alert-danger" role="alert" data-bind="visible: asyncResource.state() === 'rejected'"&gt;
+      &lt;span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"&gt;&lt;/span&gt;
+      There was an error retrieving an external resource.
+  &lt;/div&gt;
+
+  &lt;!-- ko if: asyncResource.state() === 'fulfilled' --&gt;
+      &lt;ul class="list-group" data-bind="foreach: asyncResource"&gt;
+      &lt;li class="list-group-item" data-bind="text: resourceText"&gt;&lt;/li&gt;
+      &lt;/ul>
+  &lt;!-- /ko --&gt;
+	</pre>
+
+	<p>In large complex applications you may end up with calls that can return a promise, an observable, or a plain object in different instances. `ko-promise` can help you here - by wrapping the object in an observable promise you can use a consistent approach to handling the value. Example:</p>
+
+	<pre>
+  function handleValue(value) {
+      // this value in this function can be async, observable, or just a plain object
+      // wrap it in a promise and then you can treat it like any regular promise
+
+      ko.promise(value)
+		  .then(function(resolvedValue) {
+			// respond to the value
+		});
+  }
+	</pre>
+
+<h3>Installation</h3>
+
+<p>ko.promise can be installed using Bower:</p>
+
+<pre>bower install ko-promise</pre>
+
+<p>or download directly:</p>
+
+<ul>
+<li>Minified: <a href='ko-promise.min.js'>ko-promise.min.js</a></li>
+<li>Source: <a href='ko-promise.js'>ko-promise.js</a></li>
+</ul>
+
+<h2>API</h2>
+
+<h3>Instantiation</h3>
+
+<p><code>ko.promise</code>`([Observable|Promise|Anything] obj)` &gt; `returns [ObservablePromise]`: takes an observable, a promise, or any object and converts it into an observable promise. The returned object will be an observable with additional methods supporting traditional promise functionality. (The library is agnostic when it comes to which promise implementation is used. As long as the promise has a `then` function that takes a success and fail callback it should be compatible.)</p>
+
+<ul>
+<li>If an observable is passed in, the object will be in a pending state and will resolve when a value is set on the observable. If the observable already has a value it will be considered already `fulfilled`.</li>
+<li>If a promise is passed in, the promise resolution will be wrapped and the returned observable will be set when the underlying promise is resolved. Any success or failure callbacks will be executed when the underlying promise is resolved or rejected.</li>
+<li>If any other type of object is passed in, the object will be used as the value of the observable and the object will be in a `fulfilled` state. Any success callbacks added will be executed immediately. Any failure callbacks registered will be ignored.</li>
+</ul>
+
+<h3>Promise Methods</h3>
+
+<p><code>then</code>`([Function] onFulfilled, [Function] onRejected)` > `returns [ObservablePromise]`: follows the [Promises/A+](https://promisesaplus.com) specification. Registers a callback which will be executed on the successful or unsuccessful resolution of the promise. Either callback is optional. The function returns another promise instance which will resolve with the value of the executed callback *or* the originating promise's resolved value if the callback does not return a value.</p>
+
+<p><code>state</code>`()` > `returns [String]`: a knockout computed which returns the state of the promise. The available options are `pending`, `fulfilled`, `rejected`.</p>
+
+<p><em>The following methods are subsets of `then` and are included to roughly match the methods available in [jQuery's promise implementation](http://api.jquery.com/deferred.promise/).</em></p>
+
+<p><code>fail</code> or <code>catch</code>`([Function] onRejected)` > `returns [ObservablePromise]`: registers a callback to be executed on promise rejection. Returns an observable promise.</p>
+
+<p><code>done</code>`([Function] onFulfilled)` > `returns [ObservablePromise]`: registers a callback to be executed on promise resolution. Returns an observable promise.</p>
+
+<p><code>always</code>`([Function] onResolved)` > `returns [ObservablePromise]`: registers a callback which will be executed on the resolution of the promise, whether successful or not. Returns an observable promise.</p>
+
+<h3>Utility Methods</h3>
+
+<p><code>ko.promise.when</code> or <code>ko.promise.all</code>`([Array] promises)` > `returns [ObservablePromise]`: accepts an array of observables, promises, and/or values and will return an observable promise. The promise will resolve when all of the provided promises are resolved and will return an array of the values for each promise (in the order they are included). If any of the provided promises are rejected, the returned promise will be rejected.</p>
+
+<p><code>ko.promise.race</code>`([Array] promises)` > `returns [ObservablePromise]` accepts an array of observables, promises, and/or values and will return an observable promise. The promise will resolve when the first promise resolves or rejects (whichever happens first).</p>
+
+<h2>License</h2>
+
+<p>MIT license - <a href='http://www.opensource.org/licenses/mit-license.php'>http://www.opensource.org/licenses/mit-license.php</a></p>
+</div>
+</body>
+</html>

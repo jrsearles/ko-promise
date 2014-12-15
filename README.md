@@ -45,6 +45,18 @@ function handleValue(value) {
 }
 ```
 
+## Installation
+
+ko.promise can be installed via Bower.
+
+```js
+bower install ko-promise
+```
+
+or downloaded directly.
+* Minified:
+* Source:
+
 ## API
 
 ### Instantiation
